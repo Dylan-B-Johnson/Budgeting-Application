@@ -74,6 +74,8 @@ def build_output_innputs():
     global output_inputs
     global output_labels
     global output_boubles
+    global updated_as_dollars
+    updated_as_dollars=False
     output_labels=[]
     output_inputs=[]
     output_boubles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
@@ -83,11 +85,11 @@ def build_output_innputs():
         output_labels.append(Dlabel(window,(i+' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+' per week, $'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+' per month, and $'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),3,(6+i2)))
-        t.bouble_options(output_boubles[i2],window,4,(i2+5),2,['Percent','Dollars'],bouble_effect())
+        t.bouble_options(output_boubles[i2],window,4,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bouble_effect(i2))
         i2+=1
 
-def bouble_effect():
-    #change from percent to dollars or visa versa
+def bouble_effect(bouble_row_num):
+    #percent to dollars button press
     pass
 
 def save_tax():
@@ -110,13 +112,31 @@ def get_default_percent(category):
     if category=='Discretionary:': return .05
     if category=='Savings:': return .2
     
-#TKTKTKTKTKTKTKTKTKT Will hold the 
+#Activated when budget changing buttons are enttered 
 def output_buttons(category):
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        print(output_inputs[i2].get())
+        if (output_inputs[i2].get()).isnumeric()==True:
+            if output_boubles[i2]==0: update_budget_as_percent(i2,(output_inputs[i2].get())) # Percent-> update the budget according to these
+            if output_boubles[i2]==1: update_budget_as_dollars(i2,'Weekly')  
+            if output_boubles[i2]==2: update_budget_as_dollars(i2,'Monthly') 
+            if output_boubles[i2]==3: update_budget_as_dollars(i2,'Yearly') 
         i2+=1
-             
+
+def update_budget_as_percent(category_index,percent): 
+    output_labels=[]
+    for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
+        output_labels.append(Dlabel(window,(i+' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+' per week, $'+
+                       truncate((get_net('monthly')*get_default_percent(i)),2)+' per month, and $'+
+                       truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),3,(6+i2)))
+    i2+=1
+
+def update_budget_as_dollars(category_index,time_period): #need to make these 1st b/c percent depends on these
+    updated_as_dollars=True
+    if time_period=='Weekly': pass
+    if time_period=='Monthly': pass
+    if time_period=='Yearly': pass
+
 
 #only runs if the file is running (so that functions ^ can be used)
 # Doesn't work now, since you have print('Loading') at the top
