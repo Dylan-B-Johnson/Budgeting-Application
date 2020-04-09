@@ -1,4 +1,3 @@
-#test test test test
 print('Loading...\nThis will take a suprisingly long amount of time.')
 import tkinter as tk
 from tkinter import *
