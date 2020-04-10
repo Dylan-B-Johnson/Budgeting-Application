@@ -7,7 +7,7 @@ from tkinter_toolbox import Denter
 from tkinter import messagebox
 from tkinter_toolbox import bouble_options
 from tkinter_toolbox import Denter2
-
+from tkinter_toolbox import Denter3
 
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
@@ -81,13 +81,17 @@ def build_output_innputs():
     output_boubles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        output_inputs.append(Denter2(window,i,0,(i2+5),output_buttons,i))
+        output_inputs.append(Denter3(window,i,0,(i2+5)))
         output_labels.append(Dlabel(window,(i+' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+' per week, $'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+' per month, and $'+
-                       truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),3,(6+i2)))
-        t.bouble_options(output_boubles[i2],window,4,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bouble_effect(i2))
+                       truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),2,(5+i2)))
+        t.bouble_options(output_boubles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bouble_effect(i2))
         i2+=1
-
+    enter = Button(window,text='Calculate Budget', command=lambda: output_buttons())
+    enter.grid(column=1, row=14)
+    enter = Button(window,text='Reset Budget To Default', command=lambda: build_output_innputs())
+    enter.grid(column=2, row=14)
+    
 def bouble_effect(bouble_row_num):
     #percent to dollars button press
     pass
@@ -111,33 +115,111 @@ def get_default_percent(category):
     if category=='Medical:': return .03
     if category=='Discretionary:': return .05
     if category=='Savings:': return .2
-    
+   
 #Activated when budget changing buttons are enttered 
-def output_buttons(category):
-    i2=0
-    for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        if (output_inputs[i2].get()).isnumeric()==True:
-            if output_boubles[i2]==0: update_budget_as_percent(i2,(output_inputs[i2].get())) # Percent-> update the budget according to these
-            if output_boubles[i2]==1: update_budget_as_dollars(i2,'Weekly')  
-            if output_boubles[i2]==2: update_budget_as_dollars(i2,'Monthly') 
-            if output_boubles[i2]==3: update_budget_as_dollars(i2,'Yearly') 
-        i2+=1
+def output_buttons():
+    global blank_list
+    global dollar_list
+    global dollar_ammount_sum
+    global percent_list
+    global percent_dollars
+    global default_budget
+    global dollar_ammount_annual
+    dollar_ammount_sum_annual=0
+    dollar_ammount_annual=[]
+    dollar_list=[]
+    print(output_boubles[0].get)
+    #---------------------------------------Finding the indecies of each category of bouble option--------------------------------------------------
+    blank_list=[i for i in range(8) if output_inputs[i].get().isnumeric()==False]
+    percent_list=[i for i in range(8) if (output_boubles[i].get()==0) and (output_inputs[i].get().isnumeric()==True)]
+    for i in range(8):
+        if (output_boubles[i].get() in [1,2,3]) and (output_inputs[i].get().isnumeric()==True):
+            dollar_list.append(i)
+        if (output_boubles[i].get()==1) and (output_inputs[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(output_inputs[i].get()*52.1429)
+            dollar_ammount_annual.append(output_inputs[i].get()*52.1429)
+        if (output_boubles[i].get()==2) and (output_inputs[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(output_inputs[i].get()*12)
+            dollar_ammount_annual.append(output_inputs[i].get()*12)
+        if (output_boubles[i].get()==3) and (output_inputs[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(int(output_inputs[i].get()))
+            dollar_ammount_annual.append(int(output_inputs[i].get())) ###NEED TO DO NNNNNNNNNNNNNNEEEEEEEEEEEEEDDDDDDDDDDD 2 DO: Change all output_inputs[i].get() that are stored/mathmatically operated into int(output_inputs[i].get()) s
 
-def update_budget_as_percent(category_index,percent): 
-    output_labels=[]
-    for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        output_labels.append(Dlabel(window,(i+' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+' per week, $'+
-                       truncate((get_net('monthly')*get_default_percent(i)),2)+' per month, and $'+
-                       truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),3,(6+i2)))
-    i2+=1
+    #---------------------------------------------------Error Handeling-----------------------------------------------------------------------------
+    error_had=False
+    if (len(blank_list)+len(dollar_list)+len(percent_list))!=8:
+        ###TKTKTKTKTKTKT ADD SOMETHING WENT WRONG: [Common issues e.g. nonnumerics, ect.] Unfortunately decimals are not supported
+        error_had=True
+        print('blank_list: '+str(len(blank_list)))
+        print('dollar_list: '+str(len(dollar_list)))
+        print('percent_list: '+str(len(percent_list)))
+        print('1')
+        
+    temp_percent_sum=0
+    for i in percent_list: temp_percent_sum+=output_inputs[i].get()
+    
+    if temp_percent_sum > 100:
+        error_had=True
+        print('2')
+        ###TKTKTKTTKTKTKTK ADD PERCENT IS GREATER THAN 100 by [INSERT MATHS]
+    if (dollar_ammount_sum_annual>float(net)):
+        error_had=True
+        print('3')
+        ###TKTKTKTKT Add sum of dollar ammounts is greater than net annual income ERROR
+    if (dollar_ammount_sum_annual==float(net) and temp_percent_sum>0):
+        error_had=True
+        print('4')
+        ###TKTKTKTKT Add ERROR: The sum of your dollar budgets is equal to your annual income: you cannot allocate any additional percent.
 
-def update_budget_as_dollars(category_index,time_period): #need to make these 1st b/c percent depends on these
-    updated_as_dollars=True
-    if time_period=='Weekly': pass
-    if time_period=='Monthly': pass
-    if time_period=='Yearly': pass
+    #------------------------------------------------------------Processing-------------------------------------------------------------------------
+    expense_net = float(net) - dollar_ammount_sum_annual
+    percent_dollars = [(expense_net*(output_inputs[i].get())/100) for i in percent_list]
+    pre_blank_net = expense_net-sum(percent_dollars)
 
+    default_budget=[.35,.05,.14,.15,.03,.03,.05,.2]
+    default_budget_blank_sum=0
+    for i in blank_list:
+        default_budget_blank_sum+=default_budget[i]
+        
+    global new_blank_dollars
+    new_blank_dollars=[(pre_blank_net*default_budget[i]/default_budget_blank_sum) for i in blank_list]
+    if error_had==False: update_budget()
+    print('error_had: '+str(error_had))
 
+    # updates the budget based on what the user entered
+    def update_budget():
+        print("update_budget")
+        output_labels=[]
+        i2=0
+        for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
+             if i2 in blank_list:
+                 output_labels.append(Dlabel(window,(i+' $'+truncate((new_blank_dollars[0]/52.1429),2)+' per week, $'+
+                       truncate((new_blank_dollars[0]/12),2)+' per month, and $'+
+                       truncate((new_blank_dollars[0]),2)+' per year'),2,(5+i2)))
+                 print(i+' $'+truncate((new_blank_dollars[0]/52.1429),2)+' per week, $'+
+                       truncate((new_blank_dollars[0]/12),2)+' per month, and $'+
+                       truncate((new_blank_dollars[0]),2)+' per year')
+                 del new_blank_dollars[0]
+             if i2 in dollar_list:
+                 output_labels.append(Dlabel(window,(i+' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+' per week, $'+
+                       truncate((dollar_ammount_annual[0]/12),2)+' per month, and $'+
+                       truncate((dollar_ammount_annual[0]),2)+' per year'),2,(5+i2)))
+                 print(i+' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+' per week, $'+
+                       truncate((dollar_ammount_annual[0]/12),2)+' per month, and $'+
+                       truncate((dollar_ammount_annual[0]),2)+' per year')
+                 del dollar_ammount_annual[0]
+             if i2 in percent_list:
+                 output_labels.append(Dlabel(window,(i+' $'+truncate((percent_dollars[0]/52.1429),2)+' per week, $'+
+                       truncate((percent_dollars[0]/12),2)+' per month, and $'+
+                       truncate((percent_dollars[0]),2)+' per year'),2,(5+i2)))
+                 print(i+' $'+truncate((percent_dollars[0]/52.1429),2)+' per week, $'+
+                       truncate((percent_dollars[0]/12),2)+' per month, and $'+
+                       truncate((percent_dollars[0]),2)+' per year')
+                 del percent_dollars[0]
+             i2+=1
+
+        
+    
 #only runs if the file is running (so that functions ^ can be used)
 # Doesn't work now, since you have print('Loading') at the top
 if __name__ == "__main__":
