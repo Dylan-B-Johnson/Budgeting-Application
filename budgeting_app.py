@@ -72,16 +72,17 @@ def get_net(time):
 def build_output_innputs():
     #builds budget output
     global output_inputs
+    global output_inputs_og
     global output_labels
     global output_boubles
     global updated_as_dollars
     updated_as_dollars=False
     output_labels=[]
-    output_inputs=[]
+    output_inputs_og=[]
     output_boubles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        output_inputs.append(Denter3(window,i,0,(i2+5)))
+        output_inputs_og.append(Denter3(window,i,0,(i2+5)))
         output_labels.append(Dlabel(window,(i+' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+' per week, $'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+' per month, and $'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+' per year'),2,(5+i2)))
@@ -115,79 +116,9 @@ def get_default_percent(category):
     if category=='Medical:': return .03
     if category=='Discretionary:': return .05
     if category=='Savings:': return .2
-   
-#Activated when budget changing buttons are enttered 
-def output_buttons():
-    global blank_list
-    global dollar_list
-    global dollar_ammount_sum
-    global percent_list
-    global percent_dollars
-    global default_budget
-    global dollar_ammount_annual
-    dollar_ammount_sum_annual=0
-    dollar_ammount_annual=[]
-    dollar_list=[]
-    print(output_boubles[0].get)
-    #---------------------------------------Finding the indecies of each category of bouble option--------------------------------------------------
-    blank_list=[i for i in range(8) if output_inputs[i].get().isnumeric()==False]
-    percent_list=[i for i in range(8) if (output_boubles[i].get()==0) and (output_inputs[i].get().isnumeric()==True)]
-    for i in range(8):
-        if (output_boubles[i].get() in [1,2,3]) and (output_inputs[i].get().isnumeric()==True):
-            dollar_list.append(i)
-        if (output_boubles[i].get()==1) and (output_inputs[i].get().isnumeric()==True):
-            dollar_ammount_sum_annual+=(output_inputs[i].get()*52.1429)
-            dollar_ammount_annual.append(output_inputs[i].get()*52.1429)
-        if (output_boubles[i].get()==2) and (output_inputs[i].get().isnumeric()==True):
-            dollar_ammount_sum_annual+=(output_inputs[i].get()*12)
-            dollar_ammount_annual.append(output_inputs[i].get()*12)
-        if (output_boubles[i].get()==3) and (output_inputs[i].get().isnumeric()==True):
-            dollar_ammount_sum_annual+=(int(output_inputs[i].get()))
-            dollar_ammount_annual.append(int(output_inputs[i].get())) ###NEED TO DO NNNNNNNNNNNNNNEEEEEEEEEEEEEDDDDDDDDDDD 2 DO: Change all output_inputs[i].get() that are stored/mathmatically operated into int(output_inputs[i].get()) s
 
-    #---------------------------------------------------Error Handeling-----------------------------------------------------------------------------
-    error_had=False
-    if (len(blank_list)+len(dollar_list)+len(percent_list))!=8:
-        ###TKTKTKTKTKTKT ADD SOMETHING WENT WRONG: [Common issues e.g. nonnumerics, ect.] Unfortunately decimals are not supported
-        error_had=True
-        print('blank_list: '+str(len(blank_list)))
-        print('dollar_list: '+str(len(dollar_list)))
-        print('percent_list: '+str(len(percent_list)))
-        print('1')
-        
-    temp_percent_sum=0
-    for i in percent_list: temp_percent_sum+=output_inputs[i].get()
-    
-    if temp_percent_sum > 100:
-        error_had=True
-        print('2')
-        ###TKTKTKTTKTKTKTK ADD PERCENT IS GREATER THAN 100 by [INSERT MATHS]
-    if (dollar_ammount_sum_annual>float(net)):
-        error_had=True
-        print('3')
-        ###TKTKTKTKT Add sum of dollar ammounts is greater than net annual income ERROR
-    if (dollar_ammount_sum_annual==float(net) and temp_percent_sum>0):
-        error_had=True
-        print('4')
-        ###TKTKTKTKT Add ERROR: The sum of your dollar budgets is equal to your annual income: you cannot allocate any additional percent.
-
-    #------------------------------------------------------------Processing-------------------------------------------------------------------------
-    expense_net = float(net) - dollar_ammount_sum_annual
-    percent_dollars = [(expense_net*(output_inputs[i].get())/100) for i in percent_list]
-    pre_blank_net = expense_net-sum(percent_dollars)
-
-    default_budget=[.35,.05,.14,.15,.03,.03,.05,.2]
-    default_budget_blank_sum=0
-    for i in blank_list:
-        default_budget_blank_sum+=default_budget[i]
-        
-    global new_blank_dollars
-    new_blank_dollars=[(pre_blank_net*default_budget[i]/default_budget_blank_sum) for i in blank_list]
-    if error_had==False: update_budget()
-    print('error_had: '+str(error_had))
-
-    # updates the budget based on what the user entered
-    def update_budget():
+# updates the budget based on what the user entered
+def update_budget():
         print("update_budget")
         output_labels=[]
         i2=0
@@ -217,9 +148,82 @@ def output_buttons():
                        truncate((percent_dollars[0]),2)+' per year')
                  del percent_dollars[0]
              i2+=1
-
-        
+   
+#Activated when budget changing buttons are enttered 
+def output_buttons():
+    global blank_list
+    global dollar_list
+    global dollar_ammount_sum
+    global percent_list
+    global percent_dollars
+    global default_budget
+    global dollar_ammount_annual
+    dollar_ammount_sum_annual=0
+    dollar_ammount_annual=[]
+    dollar_list=[]
+    output_inputs=[]
+    for i in range(8):
+       if output_inputs_og[i].get().isnumeric()==True: output_inputs.append(int(output_inputs_og[i].get()))
+       else: output_inputs.append(output_inputs_og[i].get())
     
+    print(output_boubles[0].get)
+    #---------------------------------------Finding the indecies of each category of bouble option--------------------------------------------------
+    blank_list=[i for i in range(8) if output_inputs_og[i].get().isnumeric()==False]
+    percent_list=[i for i in range(8) if (output_boubles[i].get()==0) and (output_inputs_og[i].get().isnumeric()==True)]
+    for i in range(8):
+        if (output_boubles[i].get() in [1,2,3]) and (output_inputs_og[i].get().isnumeric()==True):
+            dollar_list.append(i)
+        if (output_boubles[i].get()==1) and (output_inputs_og[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(output_inputs[i]*52.1429)
+            dollar_ammount_annual.append(output_inputs[i]*52.1429)
+        if (output_boubles[i].get()==2) and (output_inputs_og[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(output_inputs[i]*12)
+            dollar_ammount_annual.append(output_inputs[i]*12)
+        if (output_boubles[i].get()==3) and (output_inputs_og[i].get().isnumeric()==True):
+            dollar_ammount_sum_annual+=(output_inputs[i])
+            dollar_ammount_annual.append(output_inputs[i]) ###NEED TO DO NNNNNNNNNNNNNNEEEEEEEEEEEEEDDDDDDDDDDD 2 DO: Change all output_inputs[i].get() that are stored/mathmatically operated into int(output_inputs[i].get()) s
+
+    #---------------------------------------------------Error Handeling-----------------------------------------------------------------------------
+    error_had=False
+    if (len(blank_list)+len(dollar_list)+len(percent_list))!=8:
+        ###TKTKTKTKTKTKT ADD SOMETHING WENT WRONG: [Common issues e.g. nonnumerics, ect.] Unfortunately decimals are not supported
+        error_had=True
+        print('blank_list: '+str(len(blank_list)))
+        print('dollar_list: '+str(len(dollar_list)))
+        print('percent_list: '+str(len(percent_list)))
+        print('1')
+        
+    temp_percent_sum=0
+    for i in percent_list: temp_percent_sum+=output_inputs[i]
+    
+    if temp_percent_sum > 100:
+        error_had=True
+        print('2')
+        ###TKTKTKTTKTKTKTK ADD PERCENT IS GREATER THAN 100 by [INSERT MATHS]
+    if (dollar_ammount_sum_annual>float(net)):
+        error_had=True
+        print('3')
+        ###TKTKTKTKT Add sum of dollar ammounts is greater than net annual income ERROR
+    if (dollar_ammount_sum_annual==float(net) and temp_percent_sum>0):
+        error_had=True
+        print('4')
+        ###TKTKTKTKT Add ERROR: The sum of your dollar budgets is equal to your annual income: you cannot allocate any additional percent.
+
+    #------------------------------------------------------------Processing-------------------------------------------------------------------------
+    expense_net = float(net) - dollar_ammount_sum_annual
+    percent_dollars = [(expense_net*(output_inputs[i])/100) for i in percent_list]
+    pre_blank_net = expense_net-sum(percent_dollars)
+
+    default_budget=[.35,.05,.14,.15,.03,.03,.05,.2]
+    default_budget_blank_sum=0
+    for i in blank_list:
+        default_budget_blank_sum+=default_budget[i]
+        
+    global new_blank_dollars
+    new_blank_dollars=[(pre_blank_net*default_budget[i]/default_budget_blank_sum) for i in blank_list]
+    if error_had==False: update_budget()
+    print('error_had: '+str(error_had))
+
 #only runs if the file is running (so that functions ^ can be used)
 # Doesn't work now, since you have print('Loading') at the top
 if __name__ == "__main__":
