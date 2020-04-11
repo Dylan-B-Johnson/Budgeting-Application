@@ -11,6 +11,10 @@ from tkinter_toolbox import Denter2
 from tkinter_toolbox import Denter3
 global budget_num
 global last_budget
+global shell
+global shell2
+shell=''
+shell2=''
 last_budget=[]
 budget_num=0
 mpl.rcParams['font.size'] = 7.0 #changes matplot lib fornt size
@@ -83,6 +87,8 @@ def build_output_innputs():
     global output_boubles
     global budget_num
     global last_budget
+    global shell
+    global shell2
     output_labels=[]
     last_budget=[]
     output_inputs_og=[]
@@ -99,23 +105,50 @@ def build_output_innputs():
         
     if budget_num==0: #printing reccomended budget
         print('\n----------------------------------DEFAULT BUDGET--------------------------------')
+        shell+='\nDEFAULT BUDGET\n'
+        shell2+='\n----------------------------------DEFAULT BUDGET--------------------------------\n'
         for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
             if (i=='Food:'):
                 print(i+'\t\t$'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk\t$'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo\t$'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr')
+                temp=(i+'\t\t$'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk\t$'+
+                       truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo\t$'+
+                       truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr\n')
+                shell+=temp
+                shell2+=temp
             else:
                 print(i+'\t$'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk\t$'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo\t$'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr')
+                temp=(i+'\t$'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk\t$'+
+                       truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo\t$'+
+                       truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr\n')
+                shell+=temp
+                shell2+=temp
         budget_num+=1
         
     enter = Button(window,text='Calculate Budget', command=lambda: output_buttons())
     enter.grid(column=1, row=14)
-    enter = Button(window,text='Reset Budget To Default', command=lambda: build_output_innputs())
+    enter = Button(window,text='Reset Budget to Default', command=lambda: build_output_innputs())
     enter.grid(column=2, row=14)
     enter = Button(window,text='Generate Pie Chart', command=lambda: build_budget_piechart())
     enter.grid(column=3, row=14)
+    enter = Button(window,text='Export Budgets to Word', command=lambda: save_shell('word'))
+    enter.grid(column=4, row=14)
+    enter = Button(window,text='Export Budgets to Text', command=lambda: save_shell('text'))
+    enter.grid(column=5, row=14)
+
+def save_shell(file_type):
+    global shell
+    global shell2
+    if file_type=='word':
+        file = open('budget.docx','w')
+        file.write(shell)
+    else:
+        file = open('budget.txt','w')
+        file.write(shell2)
+    file.close()
     
 def bouble_effect(bouble_row_num):
     #percent to dollars button press
@@ -145,10 +178,14 @@ def get_default_percent(category):
 def update_budget():
         global budget_num
         global last_budget
+        global shell
+        global shell2
         output_labels=[]
         last_budget=[]
         i2=0
         print('\n------------------------------------BUDGET #'+str(budget_num)+'-----------------------------------')
+        shell=(shell+'\nBUDGET #'+str(budget_num)+'\n')
+        shell2+='\n------------------------------------BUDGET #'+str(budget_num)+'-----------------------------------\n'
         budget_num+=1
         for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
              if i2 in blank_list:
@@ -156,10 +193,22 @@ def update_budget():
                  output_labels.append(Dlabel(window,(' $'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((new_blank_dollars[0]/12),2)+'/mo    $'+
                        truncate((new_blank_dollars[0]),2)+'/yr'),2,(5+i2)))
-                 if (i=='Food:'): print(i+'\t\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+
+                 if (i=='Food:'):
+                             temp=(i+'\t\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+   #these prints really should have been a function
+                                           truncate((new_blank_dollars[0]/12),2)+'/mo\t$'+
+                                           truncate((new_blank_dollars[0]),2)+'/yr\n')
+                             shell+=temp
+                             shell2+=temp
+                             print(i+'\t\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+
+                                           truncate((new_blank_dollars[0]/12),2)+'/mo\t$'+
+                                           truncate((new_blank_dollars[0]),2)+'/yr')
+                 else:
+                     temp=(i+'\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+
                                        truncate((new_blank_dollars[0]/12),2)+'/mo\t$'+
-                                       truncate((new_blank_dollars[0]),2)+'/yr')
-                 else: print(i+'\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+
+                                       truncate((new_blank_dollars[0]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+
                                        truncate((new_blank_dollars[0]/12),2)+'/mo\t$'+
                                        truncate((new_blank_dollars[0]),2)+'/yr')
                  del new_blank_dollars[0]
@@ -168,10 +217,22 @@ def update_budget():
                  output_labels.append(Dlabel(window,(' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk    $'+
                        truncate((dollar_ammount_annual[0]/12),2)+'/mo    $'+
                        truncate((dollar_ammount_annual[0]),2)+'/yr'),2,(5+i2)))
-                 if (i=='Food:'): print(i+'\t\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
+                 if (i=='Food:'):
+                     temp=(i+'\t\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
+                                       truncate((dollar_ammount_annual[0]/12),2)+'/mo\t$'+
+                                       truncate((dollar_ammount_annual[0]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
                                        truncate((dollar_ammount_annual[0]/12),2)+'/mo\t$'+
                                        truncate((dollar_ammount_annual[0]),2)+'/yr')
-                 else: print(i+'\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
+                 else:
+                     temp=(i+'\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
+                                       truncate((dollar_ammount_annual[0]/12),2)+'/mo\t$'+
+                                       truncate((dollar_ammount_annual[0]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
                                        truncate((dollar_ammount_annual[0]/12),2)+'/mo\t$'+
                                        truncate((dollar_ammount_annual[0]),2)+'/yr')
                  del dollar_ammount_annual[0]
@@ -180,10 +241,22 @@ def update_budget():
                  output_labels.append(Dlabel(window,(' $'+truncate((percent_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((percent_dollars[0]/12),2)+'/mo    $'+
                        truncate((percent_dollars[0]),2)+'/yr'),2,(5+i2)))
-                 if (i=='Food:'): print(i+'\t\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
+                 if (i=='Food:'):
+                     temp=(i+'\t\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
+                                       truncate((percent_dollars[0]/12),2)+'/mo\t$'+
+                                       truncate((percent_dollars[0]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
                                        truncate((percent_dollars[0]/12),2)+'/mo\t$'+
                                        truncate((percent_dollars[0]),2)+'/yr')
-                 else: print(i+'\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
+                 else:
+                     temp=(i+'\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
+                                       truncate((percent_dollars[0]/12),2)+'/mo\t$'+
+                                       truncate((percent_dollars[0]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
                                        truncate((percent_dollars[0]/12),2)+'/mo\t$'+
                                        truncate((percent_dollars[0]),2)+'/yr')
                  del percent_dollars[0]
