@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import *
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 import tkinter_toolbox as t
 from tkinter_toolbox import Dlabel
 from tkinter_toolbox import Denter
@@ -8,7 +10,10 @@ from tkinter_toolbox import bouble_options
 from tkinter_toolbox import Denter2
 from tkinter_toolbox import Denter3
 global budget_num
+global last_budget
+last_budget=[]
 budget_num=0
+mpl.rcParams['font.size'] = 7.0 #changes matplot lib fornt size
 
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
@@ -77,7 +82,9 @@ def build_output_innputs():
     global output_labels
     global output_boubles
     global budget_num
+    global last_budget
     output_labels=[]
+    last_budget=[]
     output_inputs_og=[]
     output_boubles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
     i2=0
@@ -86,6 +93,7 @@ def build_output_innputs():
         output_labels.append(Dlabel(window,(' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk    $'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo    $'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr'),2,(5+i2)))
+        last_budget.append(float(truncate((get_net('yearly')*get_default_percent(i)),2)))
         t.bouble_options(output_boubles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bouble_effect(i2))
         i2+=1
         
@@ -106,6 +114,8 @@ def build_output_innputs():
     enter.grid(column=1, row=14)
     enter = Button(window,text='Reset Budget To Default', command=lambda: build_output_innputs())
     enter.grid(column=2, row=14)
+    enter = Button(window,text='Generate Pie Chart', command=lambda: build_budget_piechart())
+    enter.grid(column=3, row=14)
     
 def bouble_effect(bouble_row_num):
     #percent to dollars button press
@@ -134,12 +144,15 @@ def get_default_percent(category):
 # updates the budget based on what the user entered
 def update_budget():
         global budget_num
+        global last_budget
         output_labels=[]
+        last_budget=[]
         i2=0
         print('\n------------------------------------BUDGET #'+str(budget_num)+'-----------------------------------')
         budget_num+=1
         for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
              if i2 in blank_list:
+                 last_budget.append(float(truncate((new_blank_dollars[0]),2)))
                  output_labels.append(Dlabel(window,(' $'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((new_blank_dollars[0]/12),2)+'/mo    $'+
                        truncate((new_blank_dollars[0]),2)+'/yr'),2,(5+i2)))
@@ -151,6 +164,7 @@ def update_budget():
                                        truncate((new_blank_dollars[0]),2)+'/yr')
                  del new_blank_dollars[0]
              if i2 in dollar_list:
+                 last_budget.append(float(truncate((dollar_ammount_annual[0]),2)))
                  output_labels.append(Dlabel(window,(' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk    $'+
                        truncate((dollar_ammount_annual[0]/12),2)+'/mo    $'+
                        truncate((dollar_ammount_annual[0]),2)+'/yr'),2,(5+i2)))
@@ -162,6 +176,7 @@ def update_budget():
                                        truncate((dollar_ammount_annual[0]),2)+'/yr')
                  del dollar_ammount_annual[0]
              if i2 in percent_list:
+                 last_budget.append(float(truncate((percent_dollars[0]),2)))
                  output_labels.append(Dlabel(window,(' $'+truncate((percent_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((percent_dollars[0]/12),2)+'/mo    $'+
                        truncate((percent_dollars[0]),2)+'/yr'),2,(5+i2)))
@@ -248,13 +263,21 @@ def output_buttons():
     new_blank_dollars=[(pre_blank_net*default_budget[i]/default_budget_blank_sum) for i in blank_list]
     if error_had==False: update_budget()
 
+def build_budget_piechart():
+    global last_budget
+    labels='Housing','Utilities','Food','Transportation','Clothing','Medical','Discretionary','Savings'
+    fig1, ax1 = plt.subplots()
+    ax1.pie(last_budget, labels=labels, autopct='%1.1f%%',
+        shadow=False)
+    ax1.axis('equal')
+    plt.show()
 
 #only runs if the file is running (so that functions ^ can be used)
 # Doesn't work now, since you have print('Loading') at the top
 if __name__ == "__main__":
     window=Tk()
     window.title("Finance Helper-This is for budget exploration; it should not replace the help of a financial professional.-Dylan J.")
-    window.geometry('720x480')
+    window.geometry('1080x720')
     
     #builds 1st two rows
     income=Label(window, text="Annual Gross Income:")
