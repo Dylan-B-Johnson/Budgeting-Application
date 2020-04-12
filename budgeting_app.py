@@ -430,8 +430,8 @@ if __name__ == "__main__":
     #builds menu bars
     menu = Menu(window)
     new_item = Menu(menu)
-    new_item.add_command(label='Save Budget',command=lambda: save_budget())
-    new_item.add_command(label='Load Budget',command=lambda: load_budget())
+    new_item.add_command(label='Save Budget and Income',command=lambda: save_budget())
+    new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
     window.config(menu=menu)
     
