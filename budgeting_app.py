@@ -9,10 +9,13 @@ from tkinter import messagebox
 from tkinter_toolbox import bouble_options
 from tkinter_toolbox import Denter2
 from tkinter_toolbox import Denter3
+import pickle
 global budget_num
 global last_budget
 global shell
 global shell2
+global user_location
+user_location=0
 shell=''
 shell2=''
 last_budget=[]
@@ -27,13 +30,17 @@ def truncate(f, n):
     i, p, d = s.partition('.')
     return '.'.join([i, (d+'0'*n)[:n]])
 
-def enter_pressed():
-    if income_box.get().isnumeric()==False: messagebox.showinfo('Number Error', 'You must enter a number in the income box')
+def enter_pressed(num):
+    global user_location
+    user_location=1
+    if (income_box.get().isnumeric()==False) and num==1: messagebox.showinfo('Number Error', 'You must enter a number in the income box')
     else:
-        global current_gross
-        current_gross=income_box.get()
-        current_income.configure(text=('$'+income_box.get()))
-        build_3rd_row()
+            global current_gross
+            if num==1: current_gross=income_box.get()
+            if num==2:current_gross=float(truncate(net,2))
+            if (num==1): current_income.configure(text=('$'+income_box.get()))
+            build_3rd_row()
+
 
 def boubles():
     if bouble_var.get()==0: income.configure(text='Annual Gross Income:')
@@ -53,7 +60,7 @@ def build_3rd_row():
     lbl_3rd_2=Dlabel(window,'Any Additional Flat Income Taxes:',2,2)
     box_3rd_2=Entry(window,width=10)
     box_3rd_2.grid(column=3, row=2)
-    enter_3rd = Button(window,text='Enter', command=lambda:save_tax())
+    enter_3rd = Button(window,text='Enter', command=lambda:save_tax(1))
     enter_3rd.grid(column=4, row=2)
 
 #returns the annual gross income as a STR
@@ -89,6 +96,8 @@ def build_output_innputs():
     global last_budget
     global shell
     global shell2
+    global user_location
+    user_location=3
     output_labels=[]
     last_budget=[]
     output_inputs_og=[]
@@ -154,15 +163,17 @@ def bouble_effect(bouble_row_num):
     #percent to dollars button press
     pass
 
-def save_tax():
-    if box_3rd.get().isnumeric()== False or box_3rd_2.get().isnumeric()==False: messagebox.showinfo('Number Error', 'You must enter a number in the tax box')
+def save_tax(num):
+    global user_location
+    user_location=2
+    if (box_3rd.get().isnumeric()== False or box_3rd_2.get().isnumeric()==False) and (num==1): messagebox.showinfo('Number Error', 'You must enter a number in the tax box')
     else:
         global net
-        net=str(float(get_annual())*(1-int(box_3rd.get())/100)-(int(box_3rd_2.get())))
+        if num==1: net=str(float(get_annual())*(1-int(box_3rd.get())/100)-(int(box_3rd_2.get())))
         net_income=Dlabel(window,('Net Income: $'+truncate(net,2)+' per year,\n$'+
            str(truncate(((float(net))/12.0),2))+' per month,\n$'+
            str(truncate(((float(net))/52.1429),2))+' per week'),0,4)
-        build_output_innputs()
+        if num==1 or num==3: build_output_innputs()
         
 def get_default_percent(category):
     if category=='Housing:': return .35
@@ -345,18 +356,90 @@ def build_budget_piechart():
     ax1.axis('equal')
     plt.show()
 
+#saves budget for loading later
+def save_budget():
+    global budget_num
+    global last_budget
+    if budget_num<1: messagebox.showinfo('Error: No Budget to Save','You have not created a budget to be saved yet. Fill in the income and tax boxes to generate a default budget.'+
+                                         ' You can then create your own personalized budget to save.')
+    else:
+        file = open('last_budget','wb')
+        pickle.dump(last_budget,file)
+        f = open('last_income','w')
+        f.write(net)
+        f.close()
+        file.close()
+        
+def load_budget():
+    global net
+    global last_budget
+    global shell
+    global shell2
+    global output_labels
+    global budget_num
+    global user_location
+        
+    output_labels=[]
+    f_budget=open('last_budget','rb')
+    f_income=open('last_income','r')
+    net=f_income.readline()
+    last_budget=pickle.load(f_budget)
+    if user_location<1:
+        enter_pressed(2)
+    if user_location<2:
+        save_tax(3)
+    if user_location <3:
+        build_output_innputs()
+    save_tax(2)
+    i2=0
+    print('\n-------------------------------BUDGET #'+str(budget_num)+' (LOADED)-------------------------------')
+    shell=(shell+'\nBUDGET #'+str(budget_num)+' (LOADED)\n')
+    shell2+='\n-------------------------------BUDGET #'+str(budget_num)+' (LOADED)-------------------------------\n'
+    budget_num+=1
+    for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
+                 output_labels.append(Dlabel(window,(' $'+truncate((last_budget[i2]/52.1429),2)+'/wk    $'+
+                       truncate((last_budget[i2]/12),2)+'/mo    $'+
+                       truncate((last_budget[i2]),2)+'/yr'),2,(5+i2)))
+                 if (i=='Food:'):
+                             temp=(i+'\t\t$'+truncate((last_budget[i2]/52.1429),2)+'/wk\t$'+   #these prints really should have been a function
+                                           truncate((last_budget[i2]/12),2)+'/mo\t$'+
+                                           truncate((last_budget[i2]),2)+'/yr\n')
+                             shell+=temp
+                             shell2+=temp
+                             print(i+'\t\t$'+truncate((last_budget[i2]/52.1429),2)+'/wk\t$'+
+                                           truncate((last_budget[i2]/12),2)+'/mo\t$'+
+                                           truncate((last_budget[i2]),2)+'/yr')
+                 else:
+                     temp=(i+'\t$'+truncate((last_budget[i2]/52.1429),2)+'/wk\t$'+
+                                       truncate((last_budget[i2]/12),2)+'/mo\t$'+
+                                       truncate((last_budget[i2]),2)+'/yr\n')
+                     shell+=temp
+                     shell2+=temp
+                     print(i+'\t$'+truncate((last_budget[i2]/52.1429),2)+'/wk\t$'+
+                                       truncate((last_budget[i2]/12),2)+'/mo\t$'+
+                                       truncate((last_budget[i2]),2)+'/yr')
+                 i2+=1
+
 #only runs if the file is running (so that functions ^ can be used)
 # Doesn't work now, since you have print('Loading') at the top
 if __name__ == "__main__":
     window=Tk()
     window.title("Finance Helper-This is for budget exploration; it should not replace the help of a financial professional.-Dylan J.")
     window.geometry('1080x720')
+
+    #builds menu bars
+    menu = Menu(window)
+    new_item = Menu(menu)
+    new_item.add_command(label='Save Budget',command=lambda: save_budget())
+    new_item.add_command(label='Load Budget',command=lambda: load_budget())
+    menu.add_cascade(label='File', menu=new_item)
+    window.config(menu=menu)
     
     #builds 1st two rows
     income=Label(window, text="Annual Gross Income:")
     income_box= Entry(window,width=10)
     current_income=Label(window,text='')
-    enter = Button(window,text='Enter', command=lambda: enter_pressed())
+    enter = Button(window,text='Enter', command=lambda: enter_pressed(1))
 
     #places 1st two rows
     income.grid(column=0, row=0)
