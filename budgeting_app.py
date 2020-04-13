@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import font
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import tkinter_toolbox as t
@@ -15,12 +16,7 @@ global last_budget
 global shell
 global shell2
 global user_location
-user_location=0
-shell=''
-shell2=''
-last_budget=[]
-budget_num=0
-mpl.rcParams['font.size'] = 7.0 #changes matplot lib fornt size
+
 
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
@@ -419,13 +415,23 @@ def load_budget():
                                        truncate((last_budget[i2]/12),2)+'/mo\t$'+
                                        truncate((last_budget[i2]),2)+'/yr')
                  i2+=1
+def temp():
+    pass
 
-#only runs if the file is running (so that functions ^ can be used)
-# Doesn't work now, since you have print('Loading') at the top
 if __name__ == "__main__":
+    user_location=0
+    shell=''
+    shell2=''
+    last_budget=[]
+    budget_num=0
+    mpl.rcParams['font.size'] = 7.0 #changes matplot lib fornt size
+    
     window=Tk()
     window.title("Finance Helper-This is for budget exploration; it should not replace the help of a financial professional.-Dylan J.")
     window.geometry('1080x720')
+
+    window.option_add("*Font", "arial 12")
+    
 
     #builds menu bars
     menu = Menu(window)
@@ -433,6 +439,10 @@ if __name__ == "__main__":
     new_item.add_command(label='Save Budget and Income',command=lambda: save_budget())
     new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
+    new_item2=Menu(window)
+    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: temp() ) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
+    menu.add_cascade(label='Tools', menu=new_item2)
+    
     window.config(menu=menu)
     
     #builds 1st two rows
@@ -452,3 +462,5 @@ if __name__ == "__main__":
     t.bouble_options(bouble_var,window,4,0,3,['Annually','Monthly','Weekly'],boubles)
 
     window.mainloop()
+
+    
