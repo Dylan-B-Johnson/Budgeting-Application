@@ -5,8 +5,8 @@ from tkinter import Label
 from tkinter import Entry
 from tkinter import Button 
 
-#a function which easily creates a number of bouble radio buttons
-def bouble_options(var,tkinter,column_start,row,option_num,option_labels,option_effect):
+#a function which easily creates a number of bubble radio buttons
+def bubble_options(var,tkinter,column_start,row,option_num,option_labels,option_effect):
     rad_list=[]
     for i in range(option_num):
         rad=Radiobutton(tkinter,text=(option_labels[i]),variable=var,value=i,command=option_effect)
@@ -53,6 +53,20 @@ class Denter2:
         box.grid(column=(str_column+1), row=row)
         enter = Button(tkinter,text='Enter', command=lambda: function(arg))
         enter.grid(column=(str_column+2), row=row)
+        self.box=box
+    def configure(self,text2):
+        self.text=text2
+        lbl.configure(text=text2)
+    def get(self):
+        self.value=self.box.get()
+        return self.value
+
+#same as first two Denters, but without an enter button 
+class Denter3:
+    def __init__(self,tkinter,text,str_column,row):
+        lbl=Dlabel(tkinter,text,str_column,row)
+        box=Entry(tkinter,width=10)
+        box.grid(column=(str_column+1), row=row)
         self.box=box
     def configure(self,text2):
         self.text=text2

@@ -7,7 +7,7 @@ import tkinter_toolbox as t
 from tkinter_toolbox import Dlabel
 from tkinter_toolbox import Denter
 from tkinter import messagebox
-from tkinter_toolbox import bouble_options
+from tkinter_toolbox import bubble_options
 from tkinter_toolbox import Denter2
 from tkinter_toolbox import Denter3
 import pickle
@@ -38,10 +38,10 @@ def enter_pressed(num):
             build_3rd_row()
 
 
-def boubles():
-    if bouble_var.get()==0: income.configure(text='Annual Gross Income:')
-    if bouble_var.get()==1: income.configure(text='Monthly Gross Income:')
-    if bouble_var.get()==2: income.configure(text='Weekly Gross Income:')
+def bubbles():
+    if bubble_var.get()==0: income.configure(text='Annual Gross Income:')
+    if bubble_var.get()==1: income.configure(text='Monthly Gross Income:')
+    if bubble_var.get()==2: income.configure(text='Weekly Gross Income:')
 
 def build_3rd_row():
     #builds 3rd row (income taxes)
@@ -61,12 +61,12 @@ def build_3rd_row():
 
 #returns the annual gross income as a STR
 def get_annual():
-    if bouble_var.get()==0:
+    if bubble_var.get()==0:
         return current_gross
-    if bouble_var.get()==1:
+    if bubble_var.get()==1:
         x=str(float(current_gross)*12.0)
         return x
-    if bouble_var.get()==2:
+    if bubble_var.get()==2:
         x=str(float(current_gross)*52.1429)
         return x
 
@@ -87,7 +87,7 @@ def build_output_innputs():
     global output_inputs
     global output_inputs_og
     global output_labels
-    global output_boubles
+    global output_bubbles
     global budget_num
     global last_budget
     global shell
@@ -97,7 +97,7 @@ def build_output_innputs():
     output_labels=[]
     last_budget=[]
     output_inputs_og=[]
-    output_boubles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
+    output_bubbles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
         output_inputs_og.append(Denter3(window,i,0,(i2+5)))
@@ -105,7 +105,7 @@ def build_output_innputs():
                        truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo    $'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr'),2,(5+i2)))
         last_budget.append(float(truncate((get_net('yearly')*get_default_percent(i)),2)))
-        t.bouble_options(output_boubles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bouble_effect(i2))
+        t.bubble_options(output_bubbles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bubble_effect(i2))
         i2+=1
         
     if budget_num==0: #printing reccomended budget
@@ -155,7 +155,7 @@ def save_shell(file_type):
         file.write(shell2)
     file.close()
     
-def bouble_effect(bouble_row_num):
+def bubble_effect(bubble_row_num):
     #percent to dollars button press
     pass
 
@@ -269,7 +269,7 @@ def update_budget():
                  del percent_dollars[0]
              i2+=1
    
-#Activated when budget changing buttons are enttered 
+#Activated when budget changing buttons are entered 
 def output_buttons():
     global blank_list
     global dollar_list
@@ -287,19 +287,19 @@ def output_buttons():
        else: output_inputs.append(output_inputs_og[i].get())
     
 
-    #---------------------------------------Finding the indecies of each category of bouble option--------------------------------------------------
+    #---------------------------------------Finding the indecies of each category of bubble option--------------------------------------------------
     blank_list=[i for i in range(8) if output_inputs_og[i].get().isnumeric()==False]
-    percent_list=[i for i in range(8) if (output_boubles[i].get()==0) and (output_inputs_og[i].get().isnumeric()==True)]
+    percent_list=[i for i in range(8) if (output_bubbles[i].get()==0) and (output_inputs_og[i].get().isnumeric()==True)]
     for i in range(8):
-        if (output_boubles[i].get() in [1,2,3]) and (output_inputs_og[i].get().isnumeric()==True):
+        if (output_bubbles[i].get() in [1,2,3]) and (output_inputs_og[i].get().isnumeric()==True):
             dollar_list.append(i)
-        if (output_boubles[i].get()==1) and (output_inputs_og[i].get().isnumeric()==True):
+        if (output_bubbles[i].get()==1) and (output_inputs_og[i].get().isnumeric()==True):
             dollar_ammount_sum_annual+=(output_inputs[i]*52.1429)
             dollar_ammount_annual.append(output_inputs[i]*52.1429)
-        if (output_boubles[i].get()==2) and (output_inputs_og[i].get().isnumeric()==True):
+        if (output_bubbles[i].get()==2) and (output_inputs_og[i].get().isnumeric()==True):
             dollar_ammount_sum_annual+=(output_inputs[i]*12)
             dollar_ammount_annual.append(output_inputs[i]*12)
-        if (output_boubles[i].get()==3) and (output_inputs_og[i].get().isnumeric()==True):
+        if (output_bubbles[i].get()==3) and (output_inputs_og[i].get().isnumeric()==True):
             dollar_ammount_sum_annual+=(output_inputs[i])
             dollar_ammount_annual.append(output_inputs[i]) 
 
@@ -307,7 +307,7 @@ def output_buttons():
     error_had=False
     if (len(blank_list)+len(dollar_list)+len(percent_list))!=8:
         messagebox.showinfo('Budget Error', 'Something went wrong. Make sure that there are no nonnumerics in the budget input boxes (unfortunately '+
-                            'decimals are not supported). Also make sure that you have selected the type of number you are inputing with the boubles on the right'+
+                            'decimals are not supported). Also make sure that you have selected the type of number you are inputing with the bubbles on the right'+
                             ' (e.g. percent or dollars).')
         error_had=True
         
@@ -457,9 +457,9 @@ if __name__ == "__main__":
     enter.grid(column=2, row=0)
     current_income.grid(column=0,row=1)
 
-    #sets bouble options in 1st row
-    bouble_var=IntVar()
-    t.bouble_options(bouble_var,window,4,0,3,['Annually','Monthly','Weekly'],boubles)
+    #sets bubble options in 1st row
+    bubble_var=IntVar()
+    t.bubble_options(bubble_var,window,4,0,3,['Annually','Monthly','Weekly'],bubbles)
 
     window.mainloop()
 
