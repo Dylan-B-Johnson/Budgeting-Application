@@ -8,20 +8,25 @@ import numpy as np
 import datetime
 import pickle
 
+global stock_view
+window2=Tk()
+window2.title("Finance Helper-Portfolio Viewer")
+window2.geometry('1250x750')
+window2.option_add("*Font", "arial 12")
+stock_view=Dlabel(window2,'',2,3)
+
 def parse_stocks(text,mode):
 	global stocks
-	global stocks_loaded
 	if mode=='remove': remove_stocks=[[]]
 	start=True
 	something_went_wrong=False
 	last_char_comma=False
-	if stocks_loaded: i2=len(stocks)
+	if len(stocks[0])==2: i2=len(stocks)
 	else: i2=0
 	i3=1
-	#try:
-	if True:
+	try:                    
 		for i in text:
-			if stocks_loaded and start:
+			if len(stocks[0])==2 and start:
 				if mode=='add':
 					stocks.append([])
 			if start: 
@@ -94,12 +99,13 @@ def parse_stocks(text,mode):
 			for i in del_list: del stocks[i]
 			# print('\nTotal: $'+truncate(total,2))
 			update_stocks()
-	# except:
-	# 	messagebox.showinfo('Error','Something went wrong. Check for typos, and make sure that you typed a space followed by a number after each ticker. If any'+
-	# 		' stocks were printed out, the printed ones have been successfully entered.')
+	except:
+		messagebox.showinfo('Error','Something went wrong. Check for typos, and make sure that you typed a space followed by a number after each ticker. If any'+
+			' stocks were printed out, the printed ones have been successfully entered.')
 
 def update_stocks():
 	global stocks
+	global stock_view
 	if stocks==[[]]: messagebox.showinfo('You have no stocks!','You cannot view your stock prices if you have not entered any stocks.')
 	else:
 		try:
@@ -115,7 +121,7 @@ def update_stocks():
 				total+=i[1]*price
 			print('\nTotal: $'+truncate(total,2))
 			stock_print+=('\n\nTotal: $'+truncate(total,2))
-			stock_view=Dlabel(window2,stock_print,2,3)
+			stock_view.configure(stock_print)
 		except:
 			messagebox.showinfo('Error','Something went wrong. Check for typos, and make sure that you typed a space followed by a number after each ticker. If any'+
 				' stocks were printed out, the printed ones have been successfully entered. If you loaded this budget, try deleting it, making a new one, and saving that.')
@@ -128,14 +134,13 @@ def save_portfolio():
 
 def load_portfolio():
 	global stocks
-	global stocks_loaded
-	stocks_loaded=True
 	f_port=open('portfolio','rb')
 	stocks=pickle.load(f_port)
 	update_stocks()
 
 def delete_portfolio():
 	global stocks
+	global stock_view
 	global delete_port_attemps
 	if delete_port_attemps==0:
 		messagebox.showinfo('ARE YOU SURE?','Deleting your portfolio will clear it and delete your saved portfolio as well.'+
@@ -144,20 +149,17 @@ def delete_portfolio():
 	else:
 		messagebox.showinfo('Portfolio Deleted','Your portfolio was deleted.')
 		stocks=[[]]
+		stock_view.configure('')
 		save_portfolio()
 		delete_port_attemps=0
 
 #AMZN 4, AAPL 5, MYL 25
 if __name__ == "__main__":
 	global delete_port_attemps
-	global stocks_loaded
-	stocks_loaded=False
+	global stocks
 	delete_port_attemps=0
 	stocks=[[]]
-	window2=Tk()
-	window2.title("Finance Helper-Portfolio Viewer")
-	window2.geometry('1250x750')
-	window2.option_add("*Font", "arial 12")
+	
 
 	#builds menu bars
 	menu = Menu(window2)
