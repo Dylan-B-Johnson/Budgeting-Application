@@ -10,6 +10,7 @@ from tkinter import messagebox
 from tkinter_toolbox import bubble_options
 from tkinter_toolbox import Denter2
 from tkinter_toolbox import Denter3
+import portfolio_viewer as pv
 import pickle
 global budget_num
 global last_budget
@@ -82,7 +83,7 @@ def get_net(time):
         x = float(net)
         return x
 
-def build_output_innputs():
+def build_output_innputs(*option):
     #builds budget output or default budget 
     global output_inputs
     global output_inputs_og
@@ -94,6 +95,9 @@ def build_output_innputs():
     global shell2
     global user_location
     user_location=3
+    try: 
+        for i in output_labels: i.configure('')
+    except: pass
     output_labels=[]
     last_budget=[]
     output_inputs_og=[]
@@ -135,7 +139,7 @@ def build_output_innputs():
         
     enter = Button(window,text='Calculate Budget', command=lambda: output_buttons())
     enter.grid(column=1, row=14)
-    enter = Button(window,text='Reset Budget to Default', command=lambda: build_output_innputs())
+    enter = Button(window,text='Reset Budget to Default', command=lambda: build_output_innputs(True))
     enter.grid(column=2, row=14)
     enter = Button(window,text='Generate Pie Chart', command=lambda: build_budget_piechart())
     enter.grid(column=3, row=14)
@@ -187,7 +191,7 @@ def update_budget():
         global last_budget
         global shell
         global shell2
-        output_labels=[]
+        global output_labels
         last_budget=[]
         i2=0
         print('\n------------------------------------BUDGET #'+str(budget_num)+'-----------------------------------')
@@ -197,9 +201,9 @@ def update_budget():
         for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
              if i2 in blank_list:
                  last_budget.append(float(truncate((new_blank_dollars[0]),2)))
-                 output_labels.append(Dlabel(window,(' $'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk    $'+
+                 output_labels[i2].configure(' $'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((new_blank_dollars[0]/12),2)+'/mo    $'+
-                       truncate((new_blank_dollars[0]),2)+'/yr'),2,(5+i2)))
+                       truncate((new_blank_dollars[0]),2)+'/yr')
                  if (i=='Food:'):
                              temp=(i+'\t\t$'+truncate((new_blank_dollars[0]/52.1429),2)+'/wk\t$'+   #these prints really should have been a function
                                            truncate((new_blank_dollars[0]/12),2)+'/mo\t$'+
@@ -221,9 +225,9 @@ def update_budget():
                  del new_blank_dollars[0]
              if i2 in dollar_list:
                  last_budget.append(float(truncate((dollar_ammount_annual[0]),2)))
-                 output_labels.append(Dlabel(window,(' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk    $'+
+                 output_labels[i2].configure(' $'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk    $'+
                        truncate((dollar_ammount_annual[0]/12),2)+'/mo    $'+
-                       truncate((dollar_ammount_annual[0]),2)+'/yr'),2,(5+i2)))
+                       truncate((dollar_ammount_annual[0]),2)+'/yr')
                  if (i=='Food:'):
                      temp=(i+'\t\t$'+truncate((dollar_ammount_annual[0]/52.1429),2)+'/wk\t$'+
                                        truncate((dollar_ammount_annual[0]/12),2)+'/mo\t$'+
@@ -245,9 +249,9 @@ def update_budget():
                  del dollar_ammount_annual[0]
              if i2 in percent_list:
                  last_budget.append(float(truncate((percent_dollars[0]),2)))
-                 output_labels.append(Dlabel(window,(' $'+truncate((percent_dollars[0]/52.1429),2)+'/wk    $'+
+                 output_labels[i2].configure(' $'+truncate((percent_dollars[0]/52.1429),2)+'/wk    $'+
                        truncate((percent_dollars[0]/12),2)+'/mo    $'+
-                       truncate((percent_dollars[0]),2)+'/yr'),2,(5+i2)))
+                       truncate((percent_dollars[0]),2)+'/yr')
                  if (i=='Food:'):
                      temp=(i+'\t\t$'+truncate((percent_dollars[0]/52.1429),2)+'/wk\t$'+
                                        truncate((percent_dollars[0]/12),2)+'/mo\t$'+
@@ -375,7 +379,6 @@ def load_budget():
     global budget_num
     global user_location
         
-    output_labels=[]
     f_budget=open('last_budget','rb')
     f_income=open('last_income','r')
     net=f_income.readline()
@@ -393,9 +396,9 @@ def load_budget():
     shell2+='\n-------------------------------BUDGET #'+str(budget_num)+' (LOADED)-------------------------------\n'
     budget_num+=1
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-                 output_labels.append(Dlabel(window,(' $'+truncate((last_budget[i2]/52.1429),2)+'/wk    $'+
+                 output_labels[i2].configure(' $'+truncate((last_budget[i2]/52.1429),2)+'/wk    $'+
                        truncate((last_budget[i2]/12),2)+'/mo    $'+
-                       truncate((last_budget[i2]),2)+'/yr'),2,(5+i2)))
+                       truncate((last_budget[i2]),2)+'/yr')
                  if (i=='Food:'):
                              temp=(i+'\t\t$'+truncate((last_budget[i2]/52.1429),2)+'/wk\t$'+   #these prints really should have been a function
                                            truncate((last_budget[i2]/12),2)+'/mo\t$'+
@@ -415,8 +418,6 @@ def load_budget():
                                        truncate((last_budget[i2]/12),2)+'/mo\t$'+
                                        truncate((last_budget[i2]),2)+'/yr')
                  i2+=1
-def temp():
-    pass
 
 if __name__ == "__main__":
     user_location=0
@@ -428,7 +429,7 @@ if __name__ == "__main__":
     
     window=Tk()
     window.title("Finance Helper-This is for budget exploration; it should not replace the help of a financial professional.-Dylan J.")
-    window.geometry('1080x720')
+    window.geometry('1400x720')
 
     window.option_add("*Font", "arial 12")
     
@@ -440,7 +441,7 @@ if __name__ == "__main__":
     new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
     new_item2=Menu(window)
-    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: temp() ) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
+    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init()) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
     menu.add_cascade(label='Tools', menu=new_item2)
     
     window.config(menu=menu)
