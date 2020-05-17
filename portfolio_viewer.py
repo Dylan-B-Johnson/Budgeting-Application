@@ -7,6 +7,7 @@ import budgeting_app as ba
 import numpy as np
 import datetime
 import pickle
+from stock_history_viewer import open_viewer
 
 # def init():
 if __name__ == "__main__":
@@ -191,6 +192,9 @@ if __name__ == "__main__":
 	new_item.add_command(label='Save Portfolio',command=lambda: save_portfolio())
 	new_item.add_command(label='Load Portfolio',command=lambda: load_portfolio())
 	menu.add_cascade(label='File', menu=new_item)
+	new_item2=Menu(menu)
+	new_item2.add_command(label='Open Single Stock History Viewer',command=lambda: open_viewer())
+	menu.add_cascade(label='View', menu=new_item2)
 	window2.config(menu=menu)
 
 	#builds GUI

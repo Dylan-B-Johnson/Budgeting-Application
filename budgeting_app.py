@@ -9,7 +9,7 @@ from tkinter_toolbox import Denter
 from tkinter import messagebox
 from tkinter_toolbox import bubble_options
 from tkinter_toolbox import Denter2
-from tkinter_toolbox import Denter3
+from tkinter_toolbox import Dbox
 import portfolio_viewer as pv
 import pickle
 global budget_num
@@ -104,12 +104,12 @@ def build_output_innputs(*option):
     output_bubbles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
-        output_inputs_og.append(Denter3(window,i,0,(i2+5)))
+        output_inputs_og.append(Dbox(window,i,0,(i2+5)))
         output_labels.append(Dlabel(window,(' $'+truncate((get_net('weekly')*get_default_percent(i)),2)+'/wk    $'+
                        truncate((get_net('monthly')*get_default_percent(i)),2)+'/mo    $'+
                        truncate((get_net('yearly')*get_default_percent(i)),2)+'/yr'),2,(5+i2)))
         last_budget.append(float(truncate((get_net('yearly')*get_default_percent(i)),2)))
-        t.bubble_options(output_bubbles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bubble_effect(i2))
+        t.bubble_options(output_bubbles[i2],window,3,(i2+5),4,['Percent','Dollars (Weekly)','Dollars (Monthly)','Dollars (Yearly)'],bubble_effect())
         i2+=1
         
     if budget_num==0: #printing reccomended budget
@@ -159,8 +159,8 @@ def save_shell(file_type):
         file.write(shell2)
     file.close()
     
-def bubble_effect(bubble_row_num):
-    #percent to dollars button press
+def bubble_effect():
+    #USED TO DO NOTHING IN PORTFOLIO VIEWER
     pass
 
 def save_tax(num):
