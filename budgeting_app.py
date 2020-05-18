@@ -441,7 +441,7 @@ if __name__ == "__main__":
     new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
     new_item2=Menu(window)
-    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init()) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
+    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init(window)) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
     menu.add_cascade(label='Tools', menu=new_item2)
     
     window.config(menu=menu)
