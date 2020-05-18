@@ -10,6 +10,7 @@ from tkinter_toolbox import bubble_options
 from tkinter_toolbox import Denter2
 from tkinter_toolbox import Dbox
 import portfolio_viewer as pv
+import stock_history_viewer as shv
 import pickle
 global budget_num
 global last_budget
@@ -440,7 +441,8 @@ if __name__ == "__main__":
     new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
     new_item2=tk.Menu(window)
-    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init(window)) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
+    new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init(window))
+    new_item2.add_command(label='Open Stock History Viewer',command=lambda: shv.open_viewer(window))
     menu.add_cascade(label='Tools', menu=new_item2)
     
     window.config(menu=menu)

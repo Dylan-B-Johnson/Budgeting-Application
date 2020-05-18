@@ -27,7 +27,7 @@ def init(previous_window):
 	new_item.add_command(label='Load Portfolio',command=lambda: load_portfolio())
 	menu.add_cascade(label='File', menu=new_item)
 	new_item2=tk.Menu(menu)
-	new_item2.add_command(label='Open Single Stock History Viewer',command=lambda: open_viewer(previous_window))
+	new_item2.add_command(label='Open Stock History Viewer',command=lambda: open_viewer(previous_window))
 	menu.add_cascade(label='View', menu=new_item2)
 	window2.config(menu=menu)
 
