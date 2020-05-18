@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import *
 from tkinter import messagebox
 from tkinter_toolbox import Dlabel
 from yahoo_fin import stock_info as si
@@ -15,36 +14,36 @@ def init(previous_window):
 	global stocks
 	window2 = tk.Toplevel(previous_window)
 	window2.title("Finance Helper-Portfolio Viewer")
-	window2.geometry('1250x750')
+	window2.geometry('1250x300')
 	window2.option_add("*Font", "arial 12")
 	stock_view=Dlabel(window2,'',2,3)
 
 	delete_port_attemps=0
 	stocks=[[]]
 	#builds menu bars
-	menu = Menu(window2)
-	new_item = Menu(menu)
+	menu = tk.Menu(window2)
+	new_item = tk.Menu(menu)
 	new_item.add_command(label='Save Portfolio',command=lambda: save_portfolio())
 	new_item.add_command(label='Load Portfolio',command=lambda: load_portfolio())
 	menu.add_cascade(label='File', menu=new_item)
-	new_item2=Menu(menu)
+	new_item2=tk.Menu(menu)
 	new_item2.add_command(label='Open Single Stock History Viewer',command=lambda: open_viewer(previous_window))
 	menu.add_cascade(label='View', menu=new_item2)
 	window2.config(menu=menu)
 
 	#builds GUI
-	stock_directions = Label(window2,text=('Add or remove stocks from your portfolio by typing the stock\'s ticker, followed by a space and the number of shares to be added/removed.\n' +
+	stock_directions = tk.Label(window2,text=('Add or remove stocks from your portfolio by typing the stock\'s ticker, followed by a space and the number of shares to be added/removed.\n' +
 		'To enter multiple at once, simply add a comma and one space between them.\n Example: "AMZN 4, AAPL 5"'))
 	stock_directions.grid(column=2, row=1)
-	stock_entry_box = Entry(window2,width=100)
+	stock_entry_box = tk.Entry(window2,width=100)
 	stock_entry_box.grid(column=2, row=2)
-	add_stock = Button(window2,text='Add Stocks', command= lambda: parse_stocks(stock_entry_box.get(),'add'))
+	add_stock = tk.Button(window2,text='Add Stocks', command= lambda: parse_stocks(stock_entry_box.get(),'add'))
 	add_stock.grid(column=1, row=3)
-	remove_stock = Button(window2,text='Remove Stocks', command= lambda: parse_stocks(stock_entry_box.get(),'remove'))
+	remove_stock = tk.Button(window2,text='Remove Stocks', command= lambda: parse_stocks(stock_entry_box.get(),'remove'))
 	remove_stock.grid(column=0, row=3)
-	remove_stock = Button(window2,text='Delete Portfolio', command= lambda: delete_portfolio())
+	remove_stock = tk.Button(window2,text='Delete Portfolio', command= lambda: delete_portfolio())
 	remove_stock.grid(column=0, row=4)
-	update= Button(window2,text='Update Prices', command= lambda: update_stocks())
+	update= tk.Button(window2,text='Update Prices', command= lambda: update_stocks())
 	update.grid(column=1, row=4)
 	window2.mainloop()
 

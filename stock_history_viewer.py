@@ -41,7 +41,7 @@ def open_viewer(prev_window):
 	global stock_box
 	window3=tkinter.Toplevel(prev_window)
 	window3.title("Finance Helper-Single Stock History Viewer")
-	window3.geometry('700x120')
+	window3.geometry('760x120')
 	window3.option_add("*Font", "arial 12")
 	radio_values=tkinter.IntVar()
 	bubble_options(radio_values,window3,3,0,5,['All Time','One Year','One Quarter','One Month','One Week'], lambda: print(radio_values.get()))

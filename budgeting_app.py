@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import *
 from tkinter import font
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -52,12 +51,12 @@ def build_3rd_row():
     global enter_3rd
     global box_3rd_2
     lbl_3rd=Dlabel(window,'Percent Income Tax:',0,2)
-    box_3rd=Entry(window,width=10)
+    box_3rd=tk.Entry(window,width=10)
     box_3rd.grid(column=1, row=2)
     lbl_3rd_2=Dlabel(window,'Any Additional Flat Income Taxes:',2,2)
-    box_3rd_2=Entry(window,width=10)
+    box_3rd_2=tk.Entry(window,width=10)
     box_3rd_2.grid(column=3, row=2)
-    enter_3rd = Button(window,text='Enter', command=lambda:save_tax(1))
+    enter_3rd = tk.Button(window,text='Enter', command=lambda:save_tax(1))
     enter_3rd.grid(column=4, row=2)
 
 #returns the annual gross income as a STR
@@ -101,7 +100,7 @@ def build_output_innputs(*option):
     output_labels=[]
     last_budget=[]
     output_inputs_og=[]
-    output_bubbles=[IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar(),IntVar()]
+    output_bubbles=[tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar()]
     i2=0
     for i in ['Housing:','Utilities:','Food:','Transportation:','Clothing:','Medical:','Discretionary:','Savings:']:
         output_inputs_og.append(Dbox(window,i,0,(i2+5)))
@@ -137,15 +136,15 @@ def build_output_innputs(*option):
                 shell2+=temp
         budget_num+=1
         
-    enter = Button(window,text='Calculate Budget', command=lambda: output_buttons())
+    enter = tk.Button(window,text='Calculate Budget', command=lambda: output_buttons())
     enter.grid(column=1, row=14)
-    enter = Button(window,text='Reset Budget to Default', command=lambda: build_output_innputs(True))
+    enter = tk.Button(window,text='Reset Budget to Default', command=lambda: build_output_innputs(True))
     enter.grid(column=2, row=14)
-    enter = Button(window,text='Generate Pie Chart', command=lambda: build_budget_piechart())
+    enter = tk.Button(window,text='Generate Pie Chart', command=lambda: build_budget_piechart())
     enter.grid(column=3, row=14)
-    enter = Button(window,text='Export Budgets to Word', command=lambda: save_shell('word'))
+    enter = tk.Button(window,text='Export Budgets to Word', command=lambda: save_shell('word'))
     enter.grid(column=4, row=14)
-    enter = Button(window,text='Export Budgets to Text', command=lambda: save_shell('text'))
+    enter = tk.Button(window,text='Export Budgets to Text', command=lambda: save_shell('text'))
     enter.grid(column=5, row=14)
 
 def save_shell(file_type):
@@ -427,7 +426,7 @@ if __name__ == "__main__":
     budget_num=0
     mpl.rcParams['font.size'] = 7.0 #changes matplot lib fornt size
     
-    window=Tk()
+    window=tk.Tk()
     window.title("Finance Helper-This is for budget exploration; it should not replace the help of a financial professional.-Dylan J.")
     window.geometry('1400x720')
 
@@ -435,22 +434,22 @@ if __name__ == "__main__":
     
 
     #builds menu bars
-    menu = Menu(window)
-    new_item = Menu(menu)
+    menu = tk.Menu(window)
+    new_item = tk.Menu(menu)
     new_item.add_command(label='Save Budget and Income',command=lambda: save_budget())
     new_item.add_command(label='Load Budget and Income',command=lambda: load_budget())
     menu.add_cascade(label='File', menu=new_item)
-    new_item2=Menu(window)
+    new_item2=tk.Menu(window)
     new_item2.add_command(label='Open Portfolio Viewer',command=lambda: pv.init(window)) ######TKTKTKTKTKT REPLACE PASS WITH PORTFOLIO VIEWER MAIN FUNCTION
     menu.add_cascade(label='Tools', menu=new_item2)
     
     window.config(menu=menu)
     
     #builds 1st two rows
-    income=Label(window, text="Annual Gross Income:")
-    income_box= Entry(window,width=10)
-    current_income=Label(window,text='')
-    enter = Button(window,text='Enter', command=lambda: enter_pressed(1))
+    income=tk.Label(window, text="Annual Gross Income:")
+    income_box= tk.Entry(window,width=10)
+    current_income=tk.Label(window,text='')
+    enter = tk.Button(window,text='Enter', command=lambda: enter_pressed(1))
 
     #places 1st two rows
     income.grid(column=0, row=0)
@@ -459,7 +458,7 @@ if __name__ == "__main__":
     current_income.grid(column=0,row=1)
 
     #sets bubble options in 1st row
-    bubble_var=IntVar()
+    bubble_var=tk.IntVar()
     t.bubble_options(bubble_var,window,4,0,3,['Annually','Monthly','Weekly'],bubbles)
 
     window.mainloop()
