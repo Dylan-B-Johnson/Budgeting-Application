@@ -34,7 +34,7 @@ def graph_history(mode):
 		except: 
 			messagebox.showinfo('Ticker Invalid','It appears that \''+ticker.upper()+'\' is not a valid stock ticker. '+
 					'As such its history cannot be graphed. Please check for typos or try searching for the company\'s ticker.')
-	if tried and mode=='whole':
+	if tried and (mode=='whole' or mode=='whole_no_tot'):
 		try:
 			stock_indexes=[]
 			x=[]
@@ -45,21 +45,22 @@ def graph_history(mode):
 				else:
 					plt.plot(x[i].index[-time:],list(x[i]['adjclose'])[-time:],label='Closing Value of '+str(stocks[i][0].upper()))
 				stock_indexes.append(len(x[i].index))
-			oldest_stock_index=stock_indexes.index(max(stock_indexes))
-			total_dollar_list=[]
-			total_dollar_list=np.array(total_dollar_list)
-			for date in x[oldest_stock_index].index:
-				day_total=0
-				for i in range(len(stocks)):
-					if date in x[i].index:
-						day_total+=x[i].at[date,'adjclose']*stocks[i][1]
-				total_dollar_list=np.append(total_dollar_list,day_total)
-			if radio_values.get()==0:
-				plt.plot(x[oldest_stock_index].index,total_dollar_list,label='Total Value of Portfolio (Including Quantity of Stocks Presently Owned)')
-				plt.xlabel('Time Since '+stocks[oldest_stock_index][0].upper()+' Went Public')
-			if radio_values.get()!=0:
-				plt.plot(x[oldest_stock_index].index[-time:],total_dollar_list[-time:],label='Total Value of Portfolio (Including Quantity of Stocks Presently Owned)')
-				plt.xlabel('Past '+str(time)+' Days')
+			if mode!='whole_no_tot':
+				oldest_stock_index=stock_indexes.index(max(stock_indexes))
+				total_dollar_list=[]
+				total_dollar_list=np.array(total_dollar_list)
+				for date in x[oldest_stock_index].index:
+					day_total=0
+					for i in range(len(stocks)):
+						if date in x[i].index:
+							day_total+=x[i].at[date,'adjclose']*stocks[i][1]
+					total_dollar_list=np.append(total_dollar_list,day_total)
+				if radio_values.get()==0:
+					plt.plot(x[oldest_stock_index].index,total_dollar_list,label='Total Value of Portfolio (Including Quantity of Stocks Presently Owned)')
+					plt.xlabel('Time Since '+stocks[oldest_stock_index][0].upper()+' Went Public')
+				if radio_values.get()!=0:
+					plt.plot(x[oldest_stock_index].index[-time:],total_dollar_list[-time:],label='Total Value of Portfolio (Including Quantity of Stocks Presently Owned)')
+					plt.xlabel('Past '+str(time)+' Days')
 			plt.title('Portfolio Closing Price and Total Value History')
 			plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=False, ncol=2)
 			plt.ylabel('Closing Value in USD')
@@ -96,5 +97,6 @@ def open_viewer(prev_window):
 	graph_button=tk.Button(window3,text='Graph',command=lambda: graph_history('single'))
 	graph_button.grid(column=2, row=0)
 	graph_all_stocks=Dbutton(window3,'Graph Portfolio',lambda: graph_history('whole'),0,1)
+	graph_all_stocks_no_tot=Dbutton(window3,'Graph Portfolio Without Total',lambda: graph_history('whole_no_tot'),0,2)
 	tried=True
 	window3.mainloop()
