@@ -61,7 +61,6 @@ def more_info():
 
 def parse_stocks(text,mode):
 	global stocks
-	print(stocks)
 	if mode=='remove': remove_stocks=[[]]
 	start=True
 	something_went_wrong=False
@@ -96,8 +95,6 @@ def parse_stocks(text,mode):
 				else: 
 					if mode=='add': stocks[i2].append((stock.lower()))
 					else: 
-						print('stocks: '+str())
-						print('remove: '+str(remove_stocks))
 						remove_stocks[i4].append((stock.lower()))
 					stock=''
 					stock_num=''
