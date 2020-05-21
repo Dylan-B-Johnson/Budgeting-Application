@@ -55,7 +55,7 @@ def more_info():
 			print('\n-------------------------'+stock[0].upper()+' Extra Info-------------------------\n')
 			quote_tbl=(si.get_quote_table(stock[0], dict_result = True))
 			for label in quote_tbl:
-				print(label+': '+str(quote_tbl[label])+'\n')
+				print(label+': '+str(quote_tbl[label]))
 	except:
 		messagebox.showinfo('Extra Info Error', 'Make sure you have made or loaded a portfolio. If you have, check for typos or make sure you have internet access.')
 
