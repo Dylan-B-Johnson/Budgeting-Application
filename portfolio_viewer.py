@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter_toolbox import Dlabel
 from yahoo_fin import stock_info as si
 import budgeting_app as ba
+from tkinter_toolbox import Dbutton
 import numpy as np
 import datetime
 import pickle
@@ -45,7 +46,18 @@ def init(previous_window):
 	remove_stock.grid(column=0, row=4)
 	update= tk.Button(window2,text='Update Prices', command= lambda: update_stocks())
 	update.grid(column=1, row=4)
+	more_info_button=Dbutton(window2,'Print More Info To Console',lambda: more_info(), 0,5)
 	window2.mainloop()
+
+def more_info():
+	try:
+		for stock in stocks:
+			print('\n-------------------------'+stock[0].upper()+' Extra Info-------------------------\n')
+			quote_tbl=(si.get_quote_table(stock[0], dict_result = True))
+			for label in quote_tbl:
+				print(label+': '+str(quote_tbl[label])+'\n')
+	except:
+		messagebox.showinfo('Extra Info Error', 'Make sure you have made or loaded a portfolio. If you have, check for typos or make sure you have internet access.')
 
 def parse_stocks(text,mode):
 	global stocks
