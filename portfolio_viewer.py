@@ -57,7 +57,7 @@ def more_info():
 			for label in quote_tbl:
 				print(label+': '+str(quote_tbl[label]))
 	except:
-		messagebox.showinfo('Extra Info Error', 'Make sure you have made or loaded a portfolio. If you have, check for typos or make sure you have internet access.')
+		messagebox.showinfo('Extra Info Error', 'Make sure you have made or loaded a portfolio. If you have, check for typos or make sure you have internet access and have installed lxml.')
 
 def parse_stocks(text,mode):
 	global stocks
