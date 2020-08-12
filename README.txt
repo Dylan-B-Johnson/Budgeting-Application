@@ -13,4 +13,3 @@ Python Dependencies:
     pandas
     requests
     requests_html
-    maybe: wheel 
