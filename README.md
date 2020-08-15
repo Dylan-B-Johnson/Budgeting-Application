@@ -1,7 +1,7 @@
 # CAS-Project
 A budgeting application
 Start the app by running Budgeting_App.py
-Python Dependencies:
+#Python Dependencies:
 - lxml
 - numpy
 - tkinter
