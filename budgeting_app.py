@@ -17,6 +17,7 @@ This file is part of Budgeting App.
     along with Budgeting App.  If not, see <https://www.gnu.org/licenses/>.
 
 """
+
 import tkinter as tk
 from tkinter import font
 import matplotlib.pyplot as plt
