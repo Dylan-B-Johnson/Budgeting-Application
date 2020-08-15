@@ -14,7 +14,7 @@
 - requests
 - requests_html
 ###License:
-"""
+
 Copyright 2020 Dylan Johnson
 
     Budgeting App is free software: you can redistribute it and/or modify
@@ -27,4 +27,4 @@ Copyright 2020 Dylan Johnson
     GNU General Public License for more details.
     You should have received a copy of the GNU General Public License
     along with Budgeting App.  If not, see <https://www.gnu.org/licenses/>.
-"""
+
