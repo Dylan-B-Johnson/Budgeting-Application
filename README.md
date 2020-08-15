@@ -13,8 +13,7 @@
 - pandas
 - requests
 - requests_html
-###License:
-
+### License:
 Copyright 2020 Dylan Johnson
 
     Budgeting App is free software: you can redistribute it and/or modify
