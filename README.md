@@ -6,7 +6,6 @@
 - numpy
 - yahoo-fin
 - matplotlib
-- ftplib
 - io
 - json
 - pandas
