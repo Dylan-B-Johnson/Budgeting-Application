@@ -6,8 +6,6 @@
 - numpy
 - yahoo-fin
 - matplotlib
-- io
-- json
 - pandas
 - requests
 - requests_html
@@ -24,4 +22,3 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Budgeting App.  If not, see https://www.gnu.org/licenses/
-
