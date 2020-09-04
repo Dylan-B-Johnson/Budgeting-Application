@@ -4,7 +4,6 @@
 ### Python Dependencies:
 - lxml
 - numpy
-- tkinter
 - yahoo-fin
 - matplotlib
 - ftplib
