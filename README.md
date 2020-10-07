@@ -12,7 +12,7 @@
 ### License:
 Copyright 2020 Dylan Johnson
 ### A Note to Mac Users:
-- Make sure to 
+- Make sure to click on terminal before you try to use the "File" and "Tools" dropdown menues (clicking on them does nothing until you have click on terminal and then back to the Budgeting App window.
 ### Ideas for Future Features:
 - Ability to name and add other categories to the budget.
 - Financial Independence Retire Early (FIRE) Calculator
