@@ -11,6 +11,11 @@
 - requests_html
 ### License:
 Copyright 2020 Dylan Johnson
+### A Note to Mac Users:
+- Make sure to 
+### Ideas for Future Features:
+- Ability to name and add other categories to the budget.
+- Financial Independence Retire Early (FIRE) Calculator
 
 Budgeting App is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
