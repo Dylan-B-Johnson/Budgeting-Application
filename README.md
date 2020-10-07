@@ -1,14 +1,6 @@
 # CAS-Project
 - A budgeting application.
 - Start the app by running Budgeting_App.py
-### Python Dependencies:
-- lxml
-- numpy
-- yahoo-fin
-- matplotlib
-- pandas
-- requests
-- requests_html
 ### A Note to Mac Users:
 - Make sure to click on terminal before you try to use the "File" and "Tools" dropdown menues (clicking on them does nothing until you have click on terminal and then back to the Budgeting App window.
 ### Ideas for Future Features:
