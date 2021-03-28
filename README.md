@@ -3,6 +3,8 @@
 - Start the app by running Budgeting_App.py
 ### A Note to Mac Users:
 - Make sure to click on terminal before you try to use the "File" and "Tools" dropdown menues (clicking on them does nothing until you have click on terminal and then back to the Budgeting App window.
+### TODO:
+- Convert to PEP8 and fix requirements
 ### Ideas for Future Features:
 - Ability to name and add other categories to the budget.
 - Compound Interest Calculator.
