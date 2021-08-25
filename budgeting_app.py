@@ -38,7 +38,8 @@ global shell
 global shell2
 global user_location
 
-
+# This function is not my code (i.e. not copyrighted in any way)
+# From here: https://newbedev.com/how-to-truncate-float-values
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
     s = '{}'.format(f)
